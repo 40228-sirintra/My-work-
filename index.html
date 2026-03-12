@@ -3,213 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Salacca Sumalee - หวานหวาน ฟรุ๊ตตี้ Edition</title>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>Salacca Harvest Smart Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #ff6600;
-            --secondary: #d35400;
-            --success: #27ae60;
-            --bg: #fff5e6;
+            --primary: #FF5E00;
+            --secondary: #FF9900;
+            --dark: #1A1A1A;
+            --light: #F9F9F9;
         }
 
-        * { box-sizing: border-box; font-family: 'Prompt', sans-serif; }
-
         body {
-            background: linear-gradient(135deg, #fff5e6 0%, #ffcc80 100%);
-            min-height: 100vh;
-            margin: 0;
+            font-family: 'Prompt', sans-serif;
+            background: linear-gradient(135deg, #1A1A1A 0%, #333333 100%);
+            color: var(--light);
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
         }
 
-        /* การ์ดหลัก */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
+        .dashboard {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 40px;
-            border-radius: 40px;
-            box-shadow: 0 20px 50px rgba(211, 84, 0, 0.2);
-            width: 100%;
-            max-width: 500px;
+            border-radius: 30px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
             text-align: center;
-            border: 2px solid white;
+            width: 90%;
+            max-width: 450px;
+            transition: transform 0.3s;
         }
 
-        .icon-header { font-size: 70px; margin-bottom: 10px; display: block; }
+        .dashboard:hover { transform: translateY(-5px); }
 
-        h1 { color: var(--secondary); font-weight: 800; margin: 0; font-size: 2rem; }
-        .sub-title { color: #666; margin-bottom: 30px; font-weight: 300; }
-
-        /* ส่วนกรอกข้อมูล */
-        .input-section {
-            background: #fff;
-            padding: 25px;
-            border-radius: 25px;
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
-            margin-bottom: 25px;
-        }
-
-        label { display: block; margin-bottom: 10px; font-weight: 600; color: #444; }
+        .icon { font-size: 80px; margin-bottom: 10px; filter: drop-shadow(0 0 10px rgba(255, 94, 0, 0.5)); }
         
+        h1 { margin: 0; font-weight: 800; font-size: 28px; color: var(--primary); }
+        p { color: #AAAAAA; font-size: 14px; margin-bottom: 30px; }
+
         input[type="date"] {
             width: 100%;
             padding: 15px;
-            border: 2px solid #eee;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: white;
             border-radius: 15px;
-            font-size: 18px;
+            font-size: 16px;
+            margin-bottom: 20px;
             outline: none;
+            box-sizing: border-box;
             transition: 0.3s;
-            text-align: center;
         }
 
         input[type="date"]:focus { border-color: var(--primary); }
+        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
 
-        .btn-calc {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        .btn {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
             color: white;
             border: none;
-            padding: 20px;
-            border-radius: 20px;
-            font-size: 20px;
-            font-weight: 600;
+            padding: 16px;
             width: 100%;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: 800;
             cursor: pointer;
-            box-shadow: 0 10px 20px rgba(230, 126, 34, 0.3);
+            box-shadow: 0 10px 20px rgba(255, 94, 0, 0.3);
             transition: 0.3s;
         }
 
-        .btn-calc:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(230, 126, 34, 0.4); }
+        .btn:hover { box-shadow: 0 15px 30px rgba(255, 94, 0, 0.5); transform: scale(1.02); }
 
-        /* ส่วนผลลัพธ์ */
-        #result {
+        #resultBox {
             margin-top: 25px;
             padding: 20px;
-            border-radius: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
             display: none;
-            animation: fadeIn 0.5s ease;
         }
 
-        /* ป๊อปอัปเพลงสละเต้น */
+        #daysLeft { font-size: 32px; font-weight: 800; color: var(--secondary); margin-top: 5px; }
+
+        /* Popup สุดเท่ */
         .modal {
             display: none;
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 1000;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(15px);
+            z-index: 100;
             justify-content: center;
             align-items: center;
-            backdrop-filter: blur(15px);
         }
 
         .modal-content {
-            background: white;
-            width: 90%;
-            max-width: 450px;
-            padding: 40px;
-            border-radius: 40px;
+            background: #111;
+            padding: 50px 40px;
+            border-radius: 30px;
             text-align: center;
-            position: relative;
-            border: 5px solid var(--primary);
-            animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 50px rgba(255, 94, 0, 0.4);
+            animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .salacca-dance {
+        @keyframes pop {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .dancing-salacca {
             font-size: 100px;
             display: inline-block;
-            animation: dance 0.6s infinite alternate cubic-bezier(0.45, 0.05, 0.55, 0.95);
+            animation: bounce 0.5s infinite alternate;
+            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.5));
         }
 
-        @keyframes dance {
-            from { transform: rotate(-15deg) translateY(0); }
-            to { transform: rotate(15deg) translateY(-30px); }
+        @keyframes bounce {
+            0% { transform: translateY(0) scale(1); }
+            100% { transform: translateY(-30px) scale(1.1); }
         }
 
-        .lyrics-card {
-            background: #fff5e6;
-            padding: 20px;
-            border-radius: 20px;
-            margin: 20px 0;
-            border-left: 8px solid var(--primary);
-            text-align: left;
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-
-        .highlight-text { color: var(--secondary); font-weight: bold; }
-
+        .modal h2 { font-size: 36px; color: var(--primary); margin: 20px 0 10px; text-transform: uppercase; }
+        .modal p { font-size: 18px; color: white; margin-bottom: 30px; }
+        
         .btn-close {
-            background: var(--success);
-            color: white;
+            background: white;
+            color: var(--dark);
             border: none;
-            padding: 15px 40px;
+            padding: 12px 30px;
             border-radius: 50px;
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 800;
             cursor: pointer;
-            margin-top: 10px;
-        }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes bounceIn {
-            0% { transform: scale(0); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
         }
     </style>
 </head>
 <body>
 
-    <div class="glass-card">
-        <span class="icon-header">🌴</span>
-        <h1>สละสุมาลี ฮับ</h1>
-        <p class="sub-title">ระบบแจ้งเตือนความหวาน ฟรุ๊ตตี้</p>
+    <div class="dashboard">
+        <div class="icon">🌴</div>
+        <h1>SMART SALACCA</h1>
+        <p>ระบบคำนวณวันเก็บเกี่ยว (รอบ 3 เดือน)</p>
 
-        <div class="input-section">
-            <label>เลือกวันที่ผสมเกสรล่าสุด</label>
-            <input type="date" id="pollinateDate">
+        <div style="text-align: left;">
+            <label style="font-weight: 600; font-size: 14px; margin-bottom: 8px; display: block;">ระบุวันที่ผสมเกสร</label>
+            <input type="date" id="inputDate">
         </div>
 
-        <button class="btn-calc" onclick="calculateHarvest()">เริ่มการคำนวณ!</button>
+        <button class="btn" onclick="checkHarvest()">คำนวณวันเก็บเกี่ยว</button>
 
-        <div id="result">
-            <h3 id="dateShow" style="color:var(--secondary); margin-bottom:5px;"></h3>
-            <div id="dayLeft" style="font-size: 24px; font-weight: 800;"></div>
+        <div id="resultBox">
+            <div style="font-size: 14px; color: #aaa;" id="harvestDateStr"></div>
+            <div id="daysLeft"></div>
         </div>
     </div>
 
-    <div id="harvestModal" class="modal">
+    <div id="popupModal" class="modal">
         <div class="modal-content">
-            <div class="salacca-dance">😋</div>
-            <h2 style="color:var(--primary); margin:10px 0;">หวานหวาน ฟรุ๊ตตี้!</h2>
-            
-            <div class="lyrics-card">
-                <p class="highlight-text">เห้วันนี้ถึงเวลาเก็บสละหว๊านหวานแล้วน๊ะจ๊ะคนดี<br>
-                เอาไปกินไปจำหน่ายขายดิบขายดี</p>
-                <p>สละเราออกผลแล้ว รีบมาเก็บเกี่ยวกัน<br>
-                อย่าปล่อยให้เลยวัน พรุ่งนี้อาจไม่ทัน...</p>
-            </div>
-
-            <button class="btn-close" onclick="closeAll()">รับทราบความหวาน (ปิดเพลง)</button>
+            <div class="dancing-salacca">😋</div>
+            <h2>IT'S HARVEST TIME!</h2>
+            <p>สละสุมาลีหวานฉ่ำ พร้อมเก็บเกี่ยวแล้ว!</p>
+            <button class="btn-close" onclick="closePopup()">รับทราบ (ปิดเสียง)</button>
         </div>
     </div>
 
-    <audio id="salaccaSong" src="salacca-song.mp3" loop></audio>
+    <audio id="bgMusic" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" loop></audio>
 
     <script>
-        function calculateHarvest() {
-            const dateVal = document.getElementById('pollinateDate').value;
-            if (!dateVal) {
-                alert("กรุณาเลือกวันที่ก่อนจ้า!");
-                return;
-            }
+        function checkHarvest() {
+            const dateVal = document.getElementById('inputDate').value;
+            if (!dateVal) return alert("กรุณาเลือกวันที่ก่อนครับ!");
 
             const startDate = new Date(dateVal);
             const harvestDate = new Date(startDate);
-            // รอบเก็บเกี่ยวสละสุมาลี 210 วัน
-            harvestDate.setDate(startDate.getDate() + 210);
+            // ตั้งค่าเวลาเป็น 90 วัน (ประมาณ 3 เดือน) ตามที่คุณต้องการ
+            harvestDate.setDate(startDate.getDate() + 90); 
 
             const today = new Date();
             today.setHours(0,0,0,0);
@@ -217,37 +190,36 @@
             const diffTime = harvestDate - today;
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-            const resultDiv = document.getElementById('result');
-            const dateShow = document.getElementById('dateShow');
-            const dayLeft = document.getElementById('dayLeft');
+            const resultBox = document.getElementById('resultBox');
+            const dateStr = document.getElementById('harvestDateStr');
+            const daysLeft = document.getElementById('daysLeft');
 
-            resultDiv.style.display = 'block';
-            dateShow.innerText = "วันเก็บเกี่ยว: " + harvestDate.toLocaleDateString('th-TH', { dateStyle: 'long' });
+            resultBox.style.display = 'block';
+            dateStr.innerText = "กำหนดเก็บเกี่ยว: " + harvestDate.toLocaleDateString('th-TH');
 
             if (diffDays <= 0) {
-                dayLeft.innerText = "หวานฉ่ำพร้อมเก็บแล้ว!";
-                dayLeft.style.color = "var(--primary)";
-                showPopup();
+                daysLeft.innerText = "พร้อมเก็บเกี่ยวแล้ว!";
+                daysLeft.style.color = "var(--primary)";
+                triggerAlert();
             } else {
-                dayLeft.innerText = "อีก " + diffDays + " วันจะได้เจอกัน";
-                dayLeft.style.color = "var(--success)";
+                daysLeft.innerText = "เหลืออีก " + diffDays + " วัน";
+                daysLeft.style.color = "var(--light)";
             }
         }
 
-        function showPopup() {
-            document.getElementById('harvestModal').style.display = 'flex';
-            const audio = document.getElementById('salaccaSong');
-            audio.play().catch(e => {
-                console.log("เพลงจะเล่นหลังจากมีการกดปุ่มในหน้าเว็บ");
-            });
+        function triggerAlert() {
+            document.getElementById('popupModal').style.display = 'flex';
+            // เล่นเพลงทันทีที่ถึงวันเก็บเกี่ยว
+            document.getElementById('bgMusic').play();
         }
 
-        function closeAll() {
-            document.getElementById('harvestModal').style.display = 'none';
-            const audio = document.getElementById('salaccaSong');
+        function closePopup() {
+            document.getElementById('popupModal').style.display = 'none';
+            const audio = document.getElementById('bgMusic');
             audio.pause();
-            audio.currentTime = 0;
+            audio.currentTime = 0; // รีเซ็ตเพลงกลับไปจุดเริ่มต้น
         }
     </script>
+
 </body>
 </html>
