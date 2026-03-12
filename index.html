@@ -35,13 +35,8 @@
             text-align: center;
             width: 90%;
             max-width: 450px;
-            transition: transform 0.3s;
         }
 
-        .dashboard:hover { transform: translateY(-5px); }
-
-        .icon { font-size: 80px; margin-bottom: 10px; filter: drop-shadow(0 0 10px rgba(255, 94, 0, 0.5)); }
-        
         h1 { margin: 0; font-weight: 800; font-size: 28px; color: var(--primary); }
         p { color: #AAAAAA; font-size: 14px; margin-bottom: 30px; }
 
@@ -56,7 +51,6 @@
             margin-bottom: 20px;
             outline: none;
             box-sizing: border-box;
-            transition: 0.3s;
         }
 
         input[type="date"]:focus { border-color: var(--primary); }
@@ -76,7 +70,7 @@
             transition: 0.3s;
         }
 
-        .btn:hover { box-shadow: 0 15px 30px rgba(255, 94, 0, 0.5); transform: scale(1.02); }
+        .btn:hover { transform: scale(1.05); }
 
         #resultBox {
             margin-top: 25px;
@@ -88,7 +82,7 @@
 
         #daysLeft { font-size: 32px; font-weight: 800; color: var(--secondary); margin-top: 5px; }
 
-        /* Popup สุดเท่ */
+        /* การตั้งค่า Popup */
         .modal {
             display: none;
             position: fixed;
@@ -106,7 +100,7 @@
             padding: 50px 40px;
             border-radius: 30px;
             text-align: center;
-            border: 2px solid var(--primary);
+            border: 3px solid var(--primary);
             box-shadow: 0 0 50px rgba(255, 94, 0, 0.4);
             animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
@@ -116,19 +110,29 @@
             100% { transform: scale(1); opacity: 1; }
         }
 
-        .dancing-salacca {
-            font-size: 100px;
-            display: inline-block;
-            animation: bounce 0.5s infinite alternate;
-            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.5));
+        /* แก๊งตัวการ์ตูนเต้น */
+        .dancing-cartoon {
+            font-size: 80px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
         }
 
-        @keyframes bounce {
-            0% { transform: translateY(0) scale(1); }
-            100% { transform: translateY(-30px) scale(1.1); }
+        .dancer {
+            animation: danceMove 0.6s infinite alternate;
         }
 
-        .modal h2 { font-size: 36px; color: var(--primary); margin: 20px 0 10px; text-transform: uppercase; }
+        /* ทำให้เต้นสลับจังหวะกัน */
+        .dancer:nth-child(2) { animation-delay: 0.2s; }
+        .dancer:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes danceMove {
+            0% { transform: translateY(0) rotate(-15deg) scale(1); }
+            100% { transform: translateY(-30px) rotate(15deg) scale(1.2); }
+        }
+
+        .modal h2 { font-size: 36px; color: var(--primary); margin: 0 0 10px; }
         .modal p { font-size: 18px; color: white; margin-bottom: 30px; }
         
         .btn-close {
@@ -146,16 +150,16 @@
 <body>
 
     <div class="dashboard">
-        <div class="icon">🌴</div>
+        <div style="font-size: 70px; margin-bottom: 10px;">🌴</div>
         <h1>SMART SALACCA</h1>
-        <p>ระบบคำนวณวันเก็บเกี่ยว (รอบ 3 เดือน)</p>
+        <p>ระบบคำนวณวันเก็บเกี่ยวสละสุมาลี (รอบ 3 เดือน)</p>
 
         <div style="text-align: left;">
             <label style="font-weight: 600; font-size: 14px; margin-bottom: 8px; display: block;">ระบุวันที่ผสมเกสร</label>
             <input type="date" id="inputDate">
         </div>
 
-        <button class="btn" onclick="checkHarvest()">คำนวณวันเก็บเกี่ยว</button>
+        <button class="btn" onclick="checkHarvest()">คำนวณเลย!</button>
 
         <div id="resultBox">
             <div style="font-size: 14px; color: #aaa;" id="harvestDateStr"></div>
@@ -165,23 +169,27 @@
 
     <div id="popupModal" class="modal">
         <div class="modal-content">
-            <div class="dancing-salacca">😋</div>
-            <h2>IT'S HARVEST TIME!</h2>
-            <p>สละสุมาลีหวานฉ่ำ พร้อมเก็บเกี่ยวแล้ว!</p>
-            <button class="btn-close" onclick="closePopup()">รับทราบ (ปิดเสียง)</button>
+            <div class="dancing-cartoon">
+                <span class="dancer">👨‍🌾</span>
+                <span class="dancer">🎶</span>
+                <span class="dancer">🥥</span>
+            </div>
+            <h2>เก็บได้แล้วจ้า!</h2>
+            <p>สละสุมาลีหวานฉ่ำ พร้อมส่งออกแล้ว!</p>
+            <button class="btn-close" onclick="closePopup()">ปิดเสียงเพลง</button>
         </div>
     </div>
 
-    <audio id="bgMusic" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" loop></audio>
+    <audio id="bgMusic" src="my-song.mp3" preload="auto" loop></audio>
 
     <script>
         function checkHarvest() {
             const dateVal = document.getElementById('inputDate').value;
-            if (!dateVal) return alert("กรุณาเลือกวันที่ก่อนครับ!");
+            if (!dateVal) return alert("กรุณาเลือกวันที่ผสมเกสรก่อนครับ!");
 
             const startDate = new Date(dateVal);
             const harvestDate = new Date(startDate);
-            // ตั้งค่าเวลาเป็น 90 วัน (ประมาณ 3 เดือน) ตามที่คุณต้องการ
+            // ตั้งเวลาจำลองเป็น 90 วัน (3 เดือน)
             harvestDate.setDate(startDate.getDate() + 90); 
 
             const today = new Date();
@@ -198,7 +206,7 @@
             dateStr.innerText = "กำหนดเก็บเกี่ยว: " + harvestDate.toLocaleDateString('th-TH');
 
             if (diffDays <= 0) {
-                daysLeft.innerText = "พร้อมเก็บเกี่ยวแล้ว!";
+                daysLeft.innerText = "ถึงเวลาเก็บเกี่ยวแล้ว!";
                 daysLeft.style.color = "var(--primary)";
                 triggerAlert();
             } else {
@@ -208,16 +216,25 @@
         }
 
         function triggerAlert() {
+            // โชว์ป๊อปอัป
             document.getElementById('popupModal').style.display = 'flex';
-            // เล่นเพลงทันทีที่ถึงวันเก็บเกี่ยว
-            document.getElementById('bgMusic').play();
+            
+            // สั่งให้เล่นเพลง
+            const audio = document.getElementById('bgMusic');
+            audio.play().catch(function(error) {
+                console.log("เบราว์เซอร์บล็อกเสียง ต้องให้ผู้ใช้คลิกหน้าจอก่อน");
+                // ถ้าเบราว์เซอร์บล็อกเสียง ให้รอผู้ใช้คลิกที่ป๊อปอัปก่อนแล้วค่อยเล่นเสียง
+                document.getElementById('popupModal').addEventListener('click', function() {
+                    audio.play();
+                }, { once: true });
+            });
         }
 
         function closePopup() {
             document.getElementById('popupModal').style.display = 'none';
             const audio = document.getElementById('bgMusic');
             audio.pause();
-            audio.currentTime = 0; // รีเซ็ตเพลงกลับไปจุดเริ่มต้น
+            audio.currentTime = 0; // รีเซ็ตเพลง
         }
     </script>
 
