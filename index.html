@@ -131,65 +131,196 @@
             <button onclick="closeModal()" style="background: var(--secondary);">รับทราบ!</button>
         </div>
     </div>
-<!DOCTYPE html>
+
+    <!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>เนื้อเพลง สละหวานหวาน</title>
+    <title>สละสุมาลี ฮับ - หวานหวาน ฟรุ๊ตตี้</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;600;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #ff6600;
+            --secondary: #d35400;
+            --light-bg: #fff5e6;
+        }
+
         body {
-            font-family: 'Tahoma', sans-serif;
-            background-color: #fff5e6;
+            font-family: 'Prompt', sans-serif;
+            background-color: var(--light-bg);
+            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
         }
-        .song-card {
+
+        .main-card {
+            background: white;
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            border-top: 10px solid var(--primary);
+        }
+
+        h1 { color: var(--secondary); margin-bottom: 10px; }
+        .input-area { margin: 25px 0; text-align: left; }
+        
+        input[type="date"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 15px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
+        }
+
+        .btn-start:hover { transform: scale(1.05); }
+
+        /* ป๊อปอัปโชว์เนื้อเพลง */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
             background: white;
             padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 25px;
+            width: 85%;
+            max-width: 400px;
             text-align: center;
-            max-width: 500px;
-            border-left: 8px solid #ff6600;
+            border-left: 10px solid var(--primary);
+            animation: bounceIn 0.6s ease;
         }
-        h1 { color: #d35400; }
-        .lyrics {
-            line-height: 1.8;
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .dancing-emoji {
+            font-size: 80px;
+            display: inline-block;
+            animation: dance 0.5s infinite alternate;
+        }
+
+        @keyframes dance {
+            from { transform: rotate(-15deg) translateY(0); }
+            to { transform: rotate(15deg) translateY(-20px); }
+        }
+
+        .lyrics-box {
+            background: #fdf2e9;
+            padding: 15px;
+            border-radius: 15px;
+            margin: 15px 0;
             font-size: 1.1em;
             color: #444;
+            line-height: 1.6;
         }
-        .highlight {
-            color: #e67e22;
-            font-weight: bold;
-        }
-        footer {
-            margin-top: 20px;
-            font-size: 0.8em;
-            color: #888;
+
+        .btn-close {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
 
-<div class="song-card">
-    <h1>เพลง: หวานหวาน ฟรุ๊ตตี้</h1>
-    <div class="lyrics">
-        <p class="highlight">เห้วันนี้ถึงเวลาเก็บสละหว๊านหวานแล้วน๊ะจ๊ะคนดี<br>
-        เอาไปกินไปจำหน่ายขายดิบขายดี<br>
-        สละเราออกผลแล้ว รีบมาเก็บเกี่ยวกัน<br>
-        อย่าปล่อยให้เลยวัน พรุ่งนี้อาจไม่ทัน</p>
+    <div class="main-card">
+        <span style="font-size: 50px;">🌞</span>
+        <h1>คำนวณวันหวานฉ่ำ</h1>
+        <p>บันทึกวันที่ผสมเกสร เพื่อรอรับความฟรุ๊ตตี้</p>
         
-        <p>ดูสิพวงแดงใส กลิ่นหอมไกลไปเจ็ดบ้าน<br>
-        ความหวานมันได้ที่ เกินกว่าจะรอนาน<br>
-        แดดดีลมพัดไหว รีบเก็บใส่ตะกร้าพลัน<br>
-        ช้าไปจะเสียของ ต้องรีบจองความหวานกันเอย!</p>
-    </div>
-    <footer>© 2024 เพลงสวนสละคนดี</footer>
-</div>
+        <div class="input-area">
+            <label>วันที่เริ่มผสมพันธุ์:</label>
+            <input type="date" id="pDate">
+        </div>
 
+        <button class="btn-start" onclick="checkSweetness()">ตรวจสอบความหวาน</button>
+        <div id="status" style="margin-top:20px; font-weight:bold;"></div>
+    </div>
+
+    <div id="lyricModal" class="modal">
+        <div class="modal-content">
+            <div class="dancing-emoji">🥥</div>
+            <h2 style="color:var(--primary)">สละหวานหวานน๊ะจ๊ะ!</h2>
+            
+            <div class="lyrics-box">
+                <b>🎶 เพลง: หวานหวาน ฟรุ๊ตตี้</b><br>
+                <small>เห้วันนี้ถึงเวลาเก็บสละหว๊านหวานแล้วน๊ะจ๊ะคนดี<br>
+                เอาไปกินไปจำหน่ายขายดิบขายดี<br>
+                สละเราออกผลแล้ว รีบมาเก็บเกี่ยวกัน!</small>
+            </div>
+
+            <button class="btn-close" onclick="closeModal()">รับทราบจ้า (ปิดเพลง)</button>
+        </div>
+    </div>
+
+    <audio id="bgm" src="salacca-song.mp3" loop></audio>
+
+    <script>
+        function checkSweetness() {
+            const input = document.getElementById('pDate').value;
+            if(!input) return alert("เลือกวันก่อนจ้า");
+
+            const start = new Date(input);
+            const harvest = new Date(start);
+            harvest.setDate(start.getDate() + 210); // 210 วัน
+
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            const diff = Math.ceil((harvest - today) / (1000 * 60 * 60 * 24));
+
+            const status = document.getElementById('status');
+            if(diff <= 0) {
+                status.innerHTML = "<span style='color:red'>ถึงเวลาเก็บเกี่ยวแล้ว!</span>";
+                openModal();
+            } else {
+                status.innerHTML = "<span style='color:green'>เหลืออีก " + diff + " วัน จะหวานฉ่ำ</span>";
+            }
+        }
+
+        function openModal() {
+            document.getElementById('lyricModal').style.display = 'flex';
+            document.getElementById('bgm').play();
+        }
+
+        function closeModal() {
+            document.getElementById('lyricModal').style.display = 'none';
+            document.getElementById('bgm').pause();
+            document.getElementById('bgm').currentTime = 0;
+        }
+    </script>
 </body>
 </html>
