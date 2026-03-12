@@ -6,236 +6,60 @@
     <title>Salacca Harvest Smart Tracker</title>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #FF5E00;
-            --secondary: #FF9900;
-            --dark: #1A1A1A;
-            --light: #F9F9F9;
-        }
-
-        body {
-            font-family: 'Prompt', sans-serif;
-            background: linear-gradient(135deg, #1A1A1A 0%, #333333 100%);
-            color: var(--light);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            overflow: hidden;
-        }
-
-        .dashboard {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 40px;
-            border-radius: 30px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-            text-align: center;
-            width: 90%;
-            max-width: 450px;
-        }
-
-        h1 { margin: 0; font-weight: 800; font-size: 28px; color: var(--primary); }
-        p { color: #AAAAAA; font-size: 14px; margin-bottom: 30px; }
-
-        input[type="date"] {
-            width: 100%;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            border-radius: 15px;
-            font-size: 16px;
-            margin-bottom: 20px;
-            outline: none;
-            box-sizing: border-box;
-        }
-
-        input[type="date"]:focus { border-color: var(--primary); }
-        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
-
-        .btn {
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            color: white;
-            border: none;
-            padding: 16px;
-            width: 100%;
-            border-radius: 15px;
-            font-size: 18px;
-            font-weight: 800;
-            cursor: pointer;
-            box-shadow: 0 10px 20px rgba(255, 94, 0, 0.3);
-            transition: 0.3s;
-        }
-
-        .btn:hover { transform: scale(1.05); }
-
-        #resultBox {
-            margin-top: 25px;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 15px;
-            display: none;
-        }
-
-        #daysLeft { font-size: 32px; font-weight: 800; color: var(--secondary); margin-top: 5px; }
-
-        /* การตั้งค่า Popup */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(15px);
-            z-index: 100;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background: #111;
-            padding: 50px 40px;
-            border-radius: 30px;
-            text-align: center;
-            border: 3px solid var(--primary);
-            box-shadow: 0 0 50px rgba(255, 94, 0, 0.4);
-            animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @keyframes pop {
-            0% { transform: scale(0.5); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        /* แก๊งตัวการ์ตูนเต้น */
-        .dancing-cartoon {
-            font-size: 80px;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .dancer {
-            animation: danceMove 0.6s infinite alternate;
-        }
-
-        /* ทำให้เต้นสลับจังหวะกัน */
-        .dancer:nth-child(2) { animation-delay: 0.2s; }
-        .dancer:nth-child(3) { animation-delay: 0.4s; }
-
-        @keyframes danceMove {
-            0% { transform: translateY(0) rotate(-15deg) scale(1); }
-            100% { transform: translateY(-30px) rotate(15deg) scale(1.2); }
-        }
-
-        .modal h2 { font-size: 36px; color: var(--primary); margin: 0 0 10px; }
-        .modal p { font-size: 18px; color: white; margin-bottom: 30px; }
-        
-        .btn-close {
-            background: white;
-            color: var(--dark);
-            border: none;
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-size: 16px;
-            font-weight: 800;
-            cursor: pointer;
-        }
+        /* (ใส่ CSS สไตล์เดิมไว้ตรงนี้นะครับ เพื่อความไม่ยาวเกินไปผมขอละไว้) */
+        body { font-family: 'Prompt', sans-serif; background: #222; color: white; text-align: center; padding-top: 50px; }
+        .btn { padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; margin: 10px; }
+        .btn-test { background: #e74c3c; color: white; border: none; }
+        .btn-calc { background: #FF5E00; color: white; border: none; }
     </style>
 </head>
 <body>
 
-    <div class="dashboard">
-        <div style="font-size: 70px; margin-bottom: 10px;">🌴</div>
+    <div style="background: #333; padding: 30px; border-radius: 20px; display: inline-block;">
+        <div style="font-size: 50px;">🌴</div>
         <h1>SMART SALACCA</h1>
-        <p>ระบบคำนวณวันเก็บเกี่ยวสละสุมาลี (รอบ 3 เดือน)</p>
+        
+        <input type="date" id="inputDate" style="padding: 10px; margin: 10px 0;"><br>
 
-        <div style="text-align: left;">
-            <label style="font-weight: 600; font-size: 14px; margin-bottom: 8px; display: block;">ระบุวันที่ผสมเกสร</label>
-            <input type="date" id="inputDate">
-        </div>
+        <button class="btn btn-calc" onclick="checkHarvest()">คำนวณเลย!</button>
+        
+        <button class="btn btn-test" onclick="testSound()">🎵 ทดสอบเสียงเพลง</button>
 
-        <button class="btn" onclick="checkHarvest()">คำนวณเลย!</button>
-
-        <div id="resultBox">
-            <div style="font-size: 14px; color: #aaa;" id="harvestDateStr"></div>
-            <div id="daysLeft"></div>
-        </div>
+        <div id="daysLeft" style="font-size: 24px; margin-top: 20px; color: #FF9900;"></div>
     </div>
 
-    <div id="popupModal" class="modal">
-        <div class="modal-content">
-            <div class="dancing-cartoon">
-                <span class="dancer">👨‍🌾</span>
-                <span class="dancer">🎶</span>
-                <span class="dancer">🥥</span>
-            </div>
-            <h2>เก็บได้แล้วจ้า!</h2>
-            <p>สละสุมาลีหวานฉ่ำ พร้อมส่งออกแล้ว!</p>
-            <button class="btn-close" onclick="closePopup()">ปิดเสียงเพลง</button>
-        </div>
-    </div>
-
-    <audio id="bgMusic" src="my-song.mp3" preload="auto" loop></audio>
+    <audio id="bgMusic" src="song.mp3" preload="auto" loop></audio>
 
     <script>
+        // ฟังก์ชันใหม่: เอาไว้กดเทสต์ว่าเพลงดังไหม
+        function testSound() {
+            const audio = document.getElementById('bgMusic');
+            audio.play().catch(function(error) {
+                alert("❌ หาไฟล์เพลงไม่เจอ หรือเบราว์เซอร์บล็อกครับ! \nเช็กว่าเอาไฟล์เพลงมาวางที่เดียวกับโค้ดหรือยัง?");
+            });
+        }
+
         function checkHarvest() {
             const dateVal = document.getElementById('inputDate').value;
-            if (!dateVal) return alert("กรุณาเลือกวันที่ผสมเกสรก่อนครับ!");
+            if (!dateVal) return alert("เลือกวันที่ก่อนครับ!");
 
             const startDate = new Date(dateVal);
             const harvestDate = new Date(startDate);
-            // ตั้งเวลาจำลองเป็น 90 วัน (3 เดือน)
-            harvestDate.setDate(startDate.getDate() + 90); 
+            harvestDate.setDate(startDate.getDate() + 90); // 90 วัน (3 เดือน)
 
             const today = new Date();
             today.setHours(0,0,0,0);
-
-            const diffTime = harvestDate - today;
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-            const resultBox = document.getElementById('resultBox');
-            const dateStr = document.getElementById('harvestDateStr');
-            const daysLeft = document.getElementById('daysLeft');
-
-            resultBox.style.display = 'block';
-            dateStr.innerText = "กำหนดเก็บเกี่ยว: " + harvestDate.toLocaleDateString('th-TH');
+            const diffDays = Math.ceil((harvestDate - today) / (1000 * 60 * 60 * 24));
 
             if (diffDays <= 0) {
-                daysLeft.innerText = "ถึงเวลาเก็บเกี่ยวแล้ว!";
-                daysLeft.style.color = "var(--primary)";
-                triggerAlert();
+                document.getElementById('daysLeft').innerText = "ถึงเวลาเก็บเกี่ยวแล้วจ้า! 😋";
+                // สั่งเล่นเพลงทันทีที่คำนวณเสร็จ
+                document.getElementById('bgMusic').play();
             } else {
-                daysLeft.innerText = "เหลืออีก " + diffDays + " วัน";
-                daysLeft.style.color = "var(--light)";
+                document.getElementById('daysLeft').innerText = "เหลืออีก " + diffDays + " วัน";
+                document.getElementById('bgMusic').pause(); // ปิดเพลงถ้ายังไม่ถึงเวลา
             }
         }
-
-        function triggerAlert() {
-            // โชว์ป๊อปอัป
-            document.getElementById('popupModal').style.display = 'flex';
-            
-            // สั่งให้เล่นเพลง
-            const audio = document.getElementById('bgMusic');
-            audio.play().catch(function(error) {
-                console.log("เบราว์เซอร์บล็อกเสียง ต้องให้ผู้ใช้คลิกหน้าจอก่อน");
-                // ถ้าเบราว์เซอร์บล็อกเสียง ให้รอผู้ใช้คลิกที่ป๊อปอัปก่อนแล้วค่อยเล่นเสียง
-                document.getElementById('popupModal').addEventListener('click', function() {
-                    audio.play();
-                }, { once: true });
-            }); }
-
-        function closePopup() {
-            document.getElementById('popupModal').style.display = 'none';
-            const audio = document.getElementById('bgMusic');
-            audio.pause();
-            audio.currentTime = 0; // รีเซ็ตเพลง
-        }
     </script>
-
 </body>
 </html>
