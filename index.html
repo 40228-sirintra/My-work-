@@ -171,3 +171,321 @@
     </script>
 </body>
 </html>
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sumelee Salacca Harvest Tracker Pro v1.0 🌴</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* 1. ตั้งค่าพื้นฐานและสีสัน (Theme Color) */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #d35400 0%, #e67e22 100%); /* สีสละสุมาลี */
+            --secondary-gradient: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); /* สีใบไม้สด */
+            --text-dark: #2d3436;
+            --text-light: #636e72;
+            --white: #ffffff;
+            --bg-light: #fff5e6;
+            --shadow: 0 10px 30px rgba(211, 84, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Prompt', sans-serif; /* ใช้ฟอนต์ Prompt ทั้งเว็บ */
+        }
+
+        body {
+            background-color: var(--bg-light);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* 2. สไตล์ของกล่องเนื้อหาหลัก */
+        .main-card {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 30px; /* ขอบมน */
+            box-shadow: 0 20px 50px rgba(0,0,0,0.05); /* เงาด้านล่างให้ดูลอย */
+            width: 100%;
+            max-width: 480px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .main-card:hover {
+            transform: translateY(-5px); /* ขยับขึ้นเล็กน้อยเมื่อชี้ */
+        }
+
+        /* ตกแต่งส่วนหัว */
+        .header-icon {
+            font-size: 60px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        h1 {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-weight: 300;
+            margin-top: 5px;
+            margin-bottom: 30px;
+        }
+
+        /* 3. สไตล์ของ Input และปุ่ม */
+        .input-box {
+            text-align: left;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        input[type="date"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #eee;
+            border-radius: 15px;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input[type="date"]:focus {
+            border-color: #e67e22;
+            box-shadow: 0 0 10px rgba(230, 126, 34, 0.2);
+        }
+
+        .btn-calc {
+            width: 100%;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s ease;
+            box-shadow: 0 10px 20px rgba(211, 84, 0, 0.2);
+        }
+
+        .btn-calc:hover {
+            box-shadow: 0 15px 30px rgba(211, 84, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* 4. สไตล์พื้นที่แสดงผล */
+        #resultArea {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 15px;
+            background-color: #fefaf5;
+            display: none; /* ซ่อนไว้ก่อน */
+            animation: fadeInDown 0.5s ease;
+        }
+
+        #dateText {
+            color: #d35400;
+            margin: 0 0 10px 0;
+            font-weight: 500;
+        }
+
+        #countdownText {
+            font-size: 28px;
+            font-weight: 700;
+            color: #27ae60;
+        }
+
+        /* 5. สไตล์ของ Popup (Modal) */
+        .modal-overlay {
+            display: none; /* ซ่อนไว้ก่อน */
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(10px); /* พื้นหลังเบลอ (ดูโปรมาก) */
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 30px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            transform: scale(0.8);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .modal-overlay.open .modal-content {
+            transform: scale(1);
+        }
+
+        /* สรรพคุณสละเต้นได้ */
+        .dancing-salacca {
+            font-size: 80px;
+            margin-bottom: 10px;
+            animation: salaccaDance 0.8s infinite; /* เรียกใช้ Animation เต้น */
+            display: inline-block;
+        }
+
+        @keyframes salaccaDance {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-10px) rotate(-5deg); }
+            50% { transform: translateY(0) rotate(5deg); }
+            75% { transform: translateY(-5px) rotate(0deg); }
+        }
+
+        .btn-close {
+            margin-top: 25px;
+            width: 100%;
+            background: var(--secondary-gradient);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* Keyframes สำหรับ Animation อื่นๆ */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-card">
+        <div class="header-icon">🌴</div>
+        <h1>สละสุมาลี ฮับ Pro</h1>
+        <p class="subtitle">บันทึกวันผสมเกสร เพื่อคำนวณวันเก็บเกี่ยว (ฉบับมืออาชีพ)</p>
+
+        <div class="input-box">
+            <label for="pollinateDate">วันที่เริ่มผสมเกสร:</label>
+            <input type="date" id="pollinateDate">
+        </div>
+
+        <button class="btn-calc" onclick="calculateAndNotify()">บันทึกและคำนวณ</button>
+
+        <div id="resultArea">
+            <p id="dateText"></p>
+            <div id="countdownText"></div>
+        </div>
+    </div>
+
+    <div id="alertModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="dancing-salacca">😋</div>
+            <h2 style="color: #d35400; font-weight: 700;">ถึงเวลาเก็บเกี่ยวแล้ว!</h2>
+            <p style="color: #636e72;">สละสุมาลีของคุณหวานฉ่ำพร้อมส่งออกแล้วครับ อย่าลืมไปตรวจสอบที่สวนนะ!</p>
+            <button class="btn-close" onclick="closePopup()">รับทราบ!</button>
+        </div>
+    </div>
+
+    <audio id="alertSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+
+    <script>
+        // ฟังก์ชันคำนวณวันเก็บเกี่ยว
+        function calculateAndNotify() {
+            const inputDateStr = document.getElementById('pollinateDate').value;
+            
+            // 1. ตรวจสอบว่าใส่ข้อมูลหรือยัง
+            if (!inputDateStr) {
+                alert("กรุณาเลือกวันที่ผสมเกสรก่อนครับ!");
+                return;
+            }
+
+            const pollinateDate = new Date(inputDateStr);
+            // 2. ตั้งค่าระยะเวลาเก็บเกี่ยว (สละสุมาลีประมาณ 210 วัน)
+            const harvestDurationDays = 210;
+            const harvestDate = new Date(pollinateDate);
+            harvestDate.setDate(pollinateDate.getDate() + harvestDurationDays);
+
+            // 3. คำนวณวันคงเหลือ
+            const today = new Date();
+            today.setHours(0,0,0,0); // ตั้งเวลากลางวันเป็น 0 เพื่อคำนวณแค่วัน
+            const timeDiff = harvestDate - today;
+            const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)); // แปลง Milliseconds เป็นวัน
+
+            // 4. แสดงผลผลลัพธ์บนหน้าจอ
+            const resultArea = document.getElementById('resultArea');
+            const dateText = document.getElementById('dateText');
+            const countdownText = document.getElementById('countdownText');
+
+            resultArea.style.display = 'block'; // แสดงกล่องผลลัพธ์
+            
+            // แปลงรูปแบบวันที่ให้อ่านง่าย
+            const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+            dateText.innerText = "📅 วันเก็บเกี่ยวโดยประมาณ: " + harvestDate.toLocaleDateString('th-TH', dateOptions);
+
+            // 5. ตัดสินใจว่าจะแจ้งเตือนหรือไม่
+            if (daysLeft > 0) {
+                // ยังไม่ถึงเวลา
+                countdownText.innerText = "อีก " + daysLeft + " วัน";
+                countdownText.style.color = "#27ae60"; // สีเขียว (ยังรอได้)
+            } else if (daysLeft === 0) {
+                // ถึงวันนี้พอดี
+                countdownText.innerText = "เก็บเกี่ยวได้วันนี้!";
+                countdownText.style.color = "#d35400"; // สีส้ม
+                openPopup(); // เปิด Popup
+            } else {
+                // เลยกำหนดมาแล้ว
+                countdownText.innerText = "เลยกำหนดมาแล้ว " + Math.abs(daysLeft) + " วัน";
+                countdownText.style.color = "#c0392b"; // สีแดง (ต้องรีบแล้ว)
+                openPopup(); // เปิด Popup
+            }
+        }
+
+        // ฟังก์ชันเปิด Popup
+        function openPopup() {
+            const modal = document.getElementById('alertModal');
+            const sound = document.getElementById('alertSound');
+            
+            modal.classList.add('open'); // ใส่ Class 'open' เพื่อแสดงผล
+            sound.play(); // เล่นเสียง
+        }
+
+        // ฟังก์ชันปิด Popup
+        function closePopup() {
+            const modal = document.getElementById('alertModal');
+            modal.classList.remove('open'); // เอา Class 'open' ออกเพื่อซ่อนผล
+        }
+    </script>
+</body>
+</html>
