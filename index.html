@@ -3,62 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Salacca Harvest Smart Tracker</title>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>Sumalee Salak Calc</title>
     <style>
-        /* (ใส่ CSS สไตล์เดิมไว้ตรงนี้นะครับ เพื่อความไม่ยาวเกินไปผมขอละไว้) */
-        body { font-family: 'Prompt', sans-serif; background: #222; color: white; text-align: center; padding-top: 50px; }
-        .btn { padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; margin: 10px; }
-        .btn-test { background: #e74c3c; color: white; border: none; }
-        .btn-calc { background: #FF5E00; color: white; border: none; }
+        :root {
+            --salak-red: #d35400;
+            --salak-orange: #e67e22;
+            --white: #ffffff;
+        }
+
+        body {
+            background: linear-gradient(45deg, #d35400, #f39c12);
+            font-family: 'Kanit', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #444;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            width: 380px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        h2 { color: var(--salak-red); margin-bottom: 20px; }
+
+        .input-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9rem; }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            outline: none;
+            transition: 0.3s;
+            font-size: 1rem;
+        }
+
+        input:focus { border-color: var(--salak-orange); }
+
+        /* ปุ่มสวยๆ */
+        .btn-calc {
+            background: var(--salak-red);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            box-shadow: 0 5px 15px rgba(211, 84, 0, 0.4);
+            transition: 0.3s;
+        }
+
+        .btn-calc:hover {
+            background: var(--salak-orange);
+            transform: scale(1.02);
+        }
+
+        /* Pop-up Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+            z-index: 100;
+        }
+
+        /* Pop-up Box */
+        .modal {
+            background: white;
+            padding: 40px;
+            border-radius: 25px;
+            text-align: center;
+            max-width: 320px;
+            animation: bounceIn 0.5s ease;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .result-val { font-size: 2rem; font-weight: bold; color: #27ae60; margin: 15px 0; }
+        .close-btn { background: #555; margin-top: 10px; }
+
     </style>
 </head>
 <body>
 
-    <div style="background: #333; padding: 30px; border-radius: 20px; display: inline-block;">
-        <div style="font-size: 50px;">🌴</div>
-        <h1>SMART SALACCA</h1>
-        
-        <input type="date" id="inputDate" style="padding: 10px; margin: 10px 0;"><br>
-
-        <button class="btn btn-calc" onclick="checkHarvest()">คำนวณเลย!</button>
-        
-        <button class="btn btn-test" onclick="testSound()">🎵 ทดสอบเสียงเพลง</button>
-
-        <div id="daysLeft" style="font-size: 24px; margin-top: 20px; color: #FF9900;"></div>
+    <div class="card">
+        <h2>🍓 คำนวณกำไรสละ</h2>
+        <div class="input-group">
+            <label>ราคาทุน (ต่อ กิโลกรัม)</label>
+            <input type="number" id="cost" placeholder="เช่น 60">
+        </div>
+        <div class="input-group">
+            <label>ราคาขาย (ต่อ กิโลกรัม)</label>
+            <input type="number" id="price" placeholder="เช่น 85">
+        </div>
+        <div class="input-group">
+            <label>จำนวนที่ขาย (กิโลกรัม)</label>
+            <input type="number" id="amount" placeholder="เช่น 10">
+        </div>
+        <button class="btn-calc" onclick="calculate()">คำนวณกำไรสุทธิ</button>
     </div>
 
-    <audio id="bgMusic" src="song.mp3" preload="auto" loop></audio>
+    <div class="modal-overlay" id="modal">
+        <div class="modal">
+            <h2 style="margin:0;">กำไรที่ได้!</h2>
+            <div class="result-val" id="totalResult">0 บาท</div>
+            <p id="msg">หวานเจี๊ยบเหมือนสละสุมาลีเลย!</p>
+            <button class="btn-calc close-btn" onclick="closeModal()">ปิดหน้าต่าง</button>
+        </div>
+    </div>
 
     <script>
-        // ฟังก์ชันใหม่: เอาไว้กดเทสต์ว่าเพลงดังไหม
-        function testSound() {
-            const audio = document.getElementById('bgMusic');
-            audio.play().catch(function(error) {
-                alert("❌ หาไฟล์เพลงไม่เจอ หรือเบราว์เซอร์บล็อกครับ! \nเช็กว่าเอาไฟล์เพลงมาวางที่เดียวกับโค้ดหรือยัง?");
-            });
+        function calculate() {
+            const cost = document.getElementById('cost').value;
+            const price = document.getElementById('price').value;
+            const amount = document.getElementById('amount').value;
+
+            if(cost && price && amount) {
+                const profit = (price - cost) * amount;
+                document.getElementById('totalResult').innerText = profit + " บาท";
+                document.getElementById('modal').style.display = 'flex';
+            } else {
+                alert("กรุณากรอกข้อมูลให้ครบถ้วนก่อนนะคร้าบ");
+            }
         }
 
-        function checkHarvest() {
-            const dateVal = document.getElementById('inputDate').value;
-            if (!dateVal) return alert("เลือกวันที่ก่อนครับ!");
-
-            const startDate = new Date(dateVal);
-            const harvestDate = new Date(startDate);
-            harvestDate.setDate(startDate.getDate() + 90); // 90 วัน (3 เดือน)
-
-            const today = new Date();
-            today.setHours(0,0,0,0);
-            const diffDays = Math.ceil((harvestDate - today) / (1000 * 60 * 60 * 24));
-
-            if (diffDays <= 0) {
-                document.getElementById('daysLeft').innerText = "ถึงเวลาเก็บเกี่ยวแล้วจ้า! 😋";
-                // สั่งเล่นเพลงทันทีที่คำนวณเสร็จ
-                document.getElementById('bgMusic').play();
-            } else {
-                document.getElementById('daysLeft').innerText = "เหลืออีก " + diffDays + " วัน";
-                document.getElementById('bgMusic').pause(); // ปิดเพลงถ้ายังไม่ถึงเวลา
-            }
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
         }
     </script>
 </body>
