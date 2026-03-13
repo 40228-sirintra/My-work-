@@ -3,154 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sumalee Salak Calc</title>
+    <title>Salacca Harvest Tracker 🌴</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --salak-red: #d35400;
-            --salak-orange: #e67e22;
-            --white: #ffffff;
+            --primary: #d35400; /* สีสละ */
+            --secondary: #27ae60; /* สีใบไม้ */
+            --bg: #fff5e6;
         }
 
         body {
-            background: linear-gradient(45deg, #d35400, #f39c12);
             font-family: 'Kanit', sans-serif;
+            background-color: var(--bg);
+            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
-            color: #444;
         }
 
-        .card {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 30px;
-            border-radius: 30px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            width: 380px;
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 450px;
             text-align: center;
-            border: 1px solid rgba(255,255,255,0.3);
         }
 
-        h2 { color: var(--salak-red); margin-bottom: 20px; }
+        h1 { color: var(--primary); margin-bottom: 5px; }
+        p { color: #666; font-size: 0.9rem; }
 
         .input-group {
+            margin: 20px 0;
             text-align: left;
-            margin-bottom: 15px;
         }
-
-        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9rem; }
 
         input {
             width: 100%;
             padding: 12px;
             border: 2px solid #eee;
             border-radius: 12px;
+            font-size: 16px;
+            box-sizing: border-box;
             outline: none;
             transition: 0.3s;
-            font-size: 1rem;
         }
 
-        input:focus { border-color: var(--salak-orange); }
+        input:focus { border-color: var(--primary); }
 
-        /* ปุ่มสวยๆ */
-        .btn-calc {
-            background: var(--salak-red);
+        button {
+            width: 100%;
+            background: var(--primary);
             color: white;
             border: none;
-            padding: 15px 30px;
-            border-radius: 50px;
-            font-size: 1.1rem;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 18px;
             cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-            box-shadow: 0 5px 15px rgba(211, 84, 0, 0.4);
+            font-weight: 500;
             transition: 0.3s;
         }
 
-        .btn-calc:hover {
-            background: var(--salak-orange);
-            transform: scale(1.02);
+        button:hover { background: #e67e22; transform: translateY(-2px); }
+
+        #resultArea {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 2px dashed #eee;
         }
 
-        /* Pop-up Overlay */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7);
+        /* Popup สวยๆ */
+        .modal {
             display: none;
-            align-items: center;
-            justify-content: center;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
             backdrop-filter: blur(8px);
             z-index: 100;
+            justify-content: center;
+            align-items: center;
         }
 
-        /* Pop-up Box */
-        .modal {
+        .modal-content {
             background: white;
-            padding: 40px;
-            border-radius: 25px;
+            padding: 30px;
+            border-radius: 30px;
             text-align: center;
-            max-width: 320px;
-            animation: bounceIn 0.5s ease;
+            animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
 
         @keyframes bounceIn {
             0% { transform: scale(0.3); opacity: 0; }
-            70% { transform: scale(1.1); }
             100% { transform: scale(1); opacity: 1; }
         }
 
-        .result-val { font-size: 2rem; font-weight: bold; color: #27ae60; margin: 15px 0; }
-        .close-btn { background: #555; margin-top: 10px; }
-
+        .harvest-icon { font-size: 80px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h2>🍓 คำนวณกำไรสละ</h2>
+    <div class="container">
+        <span style="font-size: 50px;">🌴</span>
+        <h1>สละสุมาลี ฮับ</h1>
+        <p>บันทึกวันผสมเกสร เพื่อคำนวณวันเก็บเกี่ยว</p>
+
         <div class="input-group">
-            <label>ราคาทุน (ต่อ กิโลกรัม)</label>
-            <input type="number" id="cost" placeholder="เช่น 60">
+            <label>เลือกวันที่เริ่มผสมเกสร:</label>
+            <input type="date" id="pollinateDate">
         </div>
-        <div class="input-group">
-            <label>ราคาขาย (ต่อ กิโลกรัม)</label>
-            <input type="number" id="price" placeholder="เช่น 85">
+
+        <button onclick="calculateHarvest()">บันทึกและคำนวณ</button>
+
+        <div id="resultArea" style="display: none;">
+            <h3 id="dateText" style="color: var(--secondary);"></h3>
+            <div id="countdownText" style="font-size: 24px; font-weight: bold; color: var(--primary);"></div>
         </div>
-        <div class="input-group">
-            <label>จำนวนที่ขาย (กิโลกรัม)</label>
-            <input type="number" id="amount" placeholder="เช่น 10">
-        </div>
-        <button class="btn-calc" onclick="calculate()">คำนวณกำไรสุทธิ</button>
     </div>
 
-    <div class="modal-overlay" id="modal">
-        <div class="modal">
-            <h2 style="margin:0;">กำไรที่ได้!</h2>
-            <div class="result-val" id="totalResult">0 บาท</div>
-            <p id="msg">หวานเจี๊ยบเหมือนสละสุมาลีเลย!</p>
-            <button class="btn-calc close-btn" onclick="closeModal()">ปิดหน้าต่าง</button>
+    <div id="alertModal" class="modal">
+        <div class="modal-content">
+            <div class="harvest-icon">😋</div>
+            <h2 style="color: var(--primary);">ถึงเวลาเก็บเกี่ยวแล้ว!</h2>
+            <p>สละสุมาลีของคุณหวานฉ่ำพร้อมส่งออกแล้วครับ</p>
+            <button onclick="closeModal()" style="background: var(--secondary);">รับทราบ!</button>
         </div>
     </div>
+
+    <audio id="alertSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
 
     <script>
-        function calculate() {
-            const cost = document.getElementById('cost').value;
-            const price = document.getElementById('price').value;
-            const amount = document.getElementById('amount').value;
+        function calculateHarvest() {
+            const inputDate = document.getElementById('pollinateDate').value;
+            if (!inputDate) return alert("กรุณาเลือกวันที่ก่อนครับ!");
 
-            if(cost && price && amount) {
-                const profit = (price - cost) * amount;
-                document.getElementById('totalResult').innerText = profit + " บาท";
-                document.getElementById('modal').style.display = 'flex';
+            const startDate = new Date(inputDate);
+            // สละสุมาลีใช้เวลาประมาณ 210 วัน
+            const harvestDate = new Date(startDate);
+            harvestDate.setDate(startDate.getDate() + 210);
+
+            const today = new Date();
+            const timeDiff = harvestDate - today;
+            const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+            // แสดงส่วนผลลัพธ์
+            document.getElementById('resultArea').style.display = 'block';
+            document.getElementById('dateText').innerText = "วันเก็บเกี่ยวของคุณคือ: " + harvestDate.toLocaleDateString('th-TH', { dateStyle: 'long' });
+
+            if (daysLeft > 0) {
+                document.getElementById('countdownText').innerText = "อีก " + daysLeft + " วัน จะเก็บสละได้!";
             } else {
-                alert("กรุณากรอกข้อมูลให้ครบถ้วนก่อนนะคร้าบ");
+                document.getElementById('countdownText').innerText = "เก็บได้เลยตอนนี้!";
+                triggerAlert(); // เรียกฟังก์ชันเตือน
             }
         }
 
+        function triggerAlert() {
+            document.getElementById('alertModal').style.display = 'flex';
+            document.getElementById('alertSound').play();
+        }
+
         function closeModal() {
-            document.getElementById('modal').style.display = 'none';
+            document.getElementById('alertModal').style.display = 'none';
         }
     </script>
 </body>
